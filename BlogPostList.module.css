@@ -1,0 +1,23 @@
+.blogPostList {
+  display: grid;
+  grid-gap: 20px;
+  padding: 10px;
+}
+
+@media (min-width: 1200px) {
+  .blogPostList {
+    grid-template-columns: repeat(3, minmax(300px, 1fr));
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .blogPostList {
+    grid-template-columns: repeat(2, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .blogPostList {
+    grid-template-columns: 1fr;
+  }
+}
