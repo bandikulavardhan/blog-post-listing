@@ -1,0 +1,19 @@
+.blogPostItem {
+  border: 1px solid #ddd;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.blogPostItem h2 {
+  margin: 0 0 8px 0;
+}
+
+.blogPostItem p {
+  margin: 0 0 8px 0;
+}
+
+.blogPostItem small {
+  color: #888;
+}
