@@ -4,16 +4,37 @@
   margin-bottom: 16px;
   border-radius: 8px;
   background: #fafafa;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
 }
 
-.blogPostItem h2 {
+.blogPostItem:hover {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.content {
+  flex: 1;
+}
+
+.content h3 {
   margin: 0 0 8px 0;
+  color: #333;
 }
 
-.blogPostItem p {
+.content p {
   margin: 0 0 8px 0;
+  color: #666;
 }
 
-.blogPostItem small {
+.content small {
   color: #888;
+}
+
+.actions {
+  flex-shrink: 0;
 }

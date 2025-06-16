@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import BlogPostList from './BlogPostList.jsx';
 import BlogPostDetail from './BlogPostDetail.jsx';
 import BlogPostForm from './BlogPostForm.jsx';
+import DeleteButton from './DeleteButton.jsx';
+import ConfirmationDialog from './ConfirmationDialog.jsx';
+import styles from './App.module.css';
 
 const samplePosts = [
   {
@@ -30,6 +33,9 @@ function App() {
   const [posts, setPosts] = useState(samplePosts);
   const [selectedPost, setSelectedPost] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handlePostClick = (id) => {
     const post = posts.find((p) => p.id === id);
@@ -76,6 +82,31 @@ function App() {
     }, 600);
   };
 
+  const handleDeleteClick = (post) => {
+    setPostToDelete(post);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setIsDeleting(true);
+    // Simulate API call
+    setTimeout(() => {
+      setPosts(posts.filter(p => p.id !== postToDelete.id));
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
+      setPostToDelete(null);
+      if (selectedPost?.id === postToDelete.id) {
+        setSelectedPost(null);
+        setMode('list');
+      }
+    }, 600);
+  };
+
+  const handleDeleteCancel = () => {
+    setIsDeleteDialogOpen(false);
+    setPostToDelete(null);
+  };
+
   let content;
   if (mode === 'create') {
     content = (
@@ -94,24 +125,41 @@ function App() {
   } else if (mode === 'detail' && selectedPost) {
     content = (
       <>
-        <button onClick={handleBack} style={{marginBottom: '20px'}}>← Back to List</button>
-        <button onClick={() => handleEdit(selectedPost)} style={{marginLeft: '10px', marginBottom: '20px'}}>Edit Post</button>
+        <div style={{ marginBottom: '20px' }}>
+          <button onClick={handleBack}>← Back to List</button>
+          <button onClick={() => handleEdit(selectedPost)} style={{ marginLeft: '10px' }}>
+            Edit Post
+          </button>
+          <DeleteButton 
+            onClick={() => handleDeleteClick(selectedPost)} 
+            style={{ marginLeft: '10px' }}
+          />
+        </div>
         <BlogPostDetail {...selectedPost} />
       </>
     );
   } else {
     content = (
       <>
-        <button onClick={handleCreate} style={{marginBottom: '20px'}}>+ New Post</button>
-        <BlogPostList posts={posts} onPostClick={handlePostClick} />
+        <button onClick={handleCreate} className={styles.createButton}>+ New Post</button>
+        <BlogPostList 
+          posts={posts} 
+          onPostClick={handlePostClick}
+          onDeleteClick={handleDeleteClick}
+        />
       </>
     );
   }
 
   return (
-    <div>
-      <h1>Blog Post Listing</h1>
+    <div className={styles.app}>
       {content}
+      <ConfirmationDialog 
+        isOpen={isDeleteDialogOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        isDeleting={isDeleting}
+      />
     </div>
   );
 }
