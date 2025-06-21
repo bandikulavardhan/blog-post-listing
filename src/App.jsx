@@ -1,11 +1,13 @@
 // Change file extension to .jsx for Vite compatibility with JSX syntax
 
 import React, { useState } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 import BlogPostList from './BlogPostList.jsx';
 import BlogPostDetail from './BlogPostDetail.jsx';
 import BlogPostForm from './BlogPostForm.jsx';
 import DeleteButton from './DeleteButton.jsx';
 import ConfirmationDialog from './ConfirmationDialog.jsx';
+import Layout from './Layout.jsx';
 import styles from './App.module.css';
 
 const samplePosts = [
@@ -152,15 +154,19 @@ function App() {
   }
 
   return (
-    <div className={styles.app}>
-      {content}
-      <ConfirmationDialog 
-        isOpen={isDeleteDialogOpen}
-        onClose={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
-        isDeleting={isDeleting}
-      />
-    </div>
+    <Router>
+      <Layout>
+        <div className={styles.app}>
+          {content}
+          <ConfirmationDialog 
+            isOpen={isDeleteDialogOpen}
+            onClose={handleDeleteCancel}
+            onConfirm={handleDeleteConfirm}
+            isDeleting={isDeleting}
+          />
+        </div>
+      </Layout>
+    </Router>
   );
 }
 
