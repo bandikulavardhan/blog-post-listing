@@ -8,6 +8,8 @@ import BlogPostForm from './BlogPostForm.jsx';
 import DeleteButton from './DeleteButton.jsx';
 import ConfirmationDialog from './ConfirmationDialog.jsx';
 import Layout from './Layout.jsx';
+import CommentList from './CommentList.jsx';
+import CommentForm from './CommentForm.jsx';
 import styles from './App.module.css';
 
 const samplePosts = [
@@ -29,6 +31,24 @@ const samplePosts = [
   }
 ];
 
+const initialComments = {
+  1: [
+    {
+      name: 'Alice',
+      date: '2025-07-01T10:30',
+      text: 'Great post! Very informative.',
+      avatar: '',
+    },
+    {
+      name: 'Bob',
+      date: '2025-07-02T14:15',
+      text: 'Thanks for sharing!',
+      avatar: '',
+    },
+  ],
+  2: [],
+};
+
 function App() {
   const [mode, setMode] = useState('list'); // 'list' | 'create' | 'edit'
   const [editPost, setEditPost] = useState(null);
@@ -38,6 +58,7 @@ function App() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [comments, setComments] = useState(initialComments);
 
   const handlePostClick = (id) => {
     const post = posts.find((p) => p.id === id);
@@ -109,6 +130,22 @@ function App() {
     setPostToDelete(null);
   };
 
+  const handleAddComment = (comment) => {
+    if (!selectedPost) return;
+    setComments((prev) => {
+      const postId = selectedPost.id;
+      const newComment = {
+        ...comment,
+        date: new Date().toISOString(),
+        avatar: '', // Optionally set avatar
+      };
+      return {
+        ...prev,
+        [postId]: [...(prev[postId] || []), newComment],
+      };
+    });
+  };
+
   let content;
   if (mode === 'create') {
     content = (
@@ -138,6 +175,9 @@ function App() {
           />
         </div>
         <BlogPostDetail {...selectedPost} />
+        <h2 style={{marginTop: '32px'}}>Comments</h2>
+        <CommentList comments={comments[selectedPost.id] || []} />
+        <CommentForm onSubmit={handleAddComment} isLoggedIn={false} userName={''} />
       </>
     );
   } else {
