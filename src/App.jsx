@@ -10,6 +10,7 @@ import ConfirmationDialog from './ConfirmationDialog.jsx';
 import Layout from './Layout.jsx';
 import CommentList from './CommentList.jsx';
 import CommentForm from './CommentForm.jsx';
+import SearchBar from './SearchBar.jsx';
 import styles from './App.module.css';
 
 const samplePosts = [
@@ -59,6 +60,7 @@ function App() {
   const [postToDelete, setPostToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [comments, setComments] = useState(initialComments);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handlePostClick = (id) => {
     const post = posts.find((p) => p.id === id);
@@ -146,6 +148,20 @@ function App() {
     });
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
+  // Filter posts by search query (case-insensitive, title or content)
+  const filteredPosts = posts.filter(post => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      post.title.toLowerCase().includes(q) ||
+      post.content.toLowerCase().includes(q)
+    );
+  });
+
   let content;
   if (mode === 'create') {
     content = (
@@ -183,12 +199,16 @@ function App() {
   } else {
     content = (
       <>
+        <SearchBar onSearch={handleSearch} />
         <button onClick={handleCreate} className={styles.createButton}>+ New Post</button>
         <BlogPostList 
-          posts={posts} 
+          posts={filteredPosts} 
           onPostClick={handlePostClick}
           onDeleteClick={handleDeleteClick}
         />
+        {filteredPosts.length === 0 && (
+          <div style={{marginTop: '24px', color: '#888'}}>No posts found.</div>
+        )}
       </>
     );
   }
